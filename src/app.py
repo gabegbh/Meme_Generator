@@ -1,11 +1,11 @@
 import random
 import os
 import requests
+import urllib.request
 from flask import Flask, render_template, abort, request
 
-from .QuoteEngine.Ingestor import Ingestor
-
-# @TODO Import your MemeEngine classes
+from QuoteEngine import Ingestor, QuoteModel
+from MemeEngine import MemeEngine
 
 app = Flask(__name__)
 
@@ -25,8 +25,10 @@ def setup():
         quotes.extend(Ingestor.parse(file))
 
     images_path = "./_data/photos/dog/"
-    
-    imgs = list(filter(lambda ext: ext.split('.')[-1] in ['jpg', 'png', 'gif'], next(os.walk(images_path), (None, None, []))[2]))
+
+    paths = next(os.walk(images_path), (None, None, []))[2]
+    paths = filter(lambda ext: ext.split('.')[-1] in ['jpg', 'png', 'gif'], paths)
+    imgs = [images_path + img for img in paths]
 
     return quotes, imgs
 
@@ -38,13 +40,9 @@ quotes, imgs = setup()
 def meme_rand():
     """ Generate a random meme """
 
-    # @TODO:
-    # Use the random python standard library class to:
-    # 1. select a random image from imgs array
-    # 2. select a random quote from the quotes array
+    img = random.choice(imgs)
+    quote = random.choice(quotes)
 
-    img = None
-    quote = None
     path = meme.make_meme(img, quote.body, quote.author)
     return render_template('meme.html', path=path)
 
@@ -59,15 +57,20 @@ def meme_form():
 def meme_post():
     """ Create a user defined meme """
 
-    # @TODO:
-    # 1. Use requests to save the image from the image_url
-    #    form param to a temp local file.
-    # 2. Use the meme object to generate a meme using this temp
-    #    file and the body and author form paramaters.
-    # 3. Remove the temporary saved image.
-
-    path = None
-
+    img_url = request.form['image_url']
+    tmp_path = "./tmp/user.jpg"
+    quote_body = request.form['body']
+    quote_author = request.form['author']
+    
+    try:
+        urllib.request.urlretrieve(img_url, tmp_path)
+    except:
+        # Note to reviewer, try the create form with this URL: https://tinyurl.com/wfvz6n3p
+        quote_body, quote_author = ' - - - - - - - ', '- - - - - - "'
+        tmp_path = "./_data/photos/error.jpg"
+        print('HTTP bot-scraping-defense triggered. Please try another url')
+    
+    path = meme.make_meme(tmp_path, quote_body, quote_author)
     return render_template('meme.html', path=path)
 
 

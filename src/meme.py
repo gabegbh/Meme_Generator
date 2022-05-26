@@ -1,7 +1,9 @@
 import os
 import random
+import argparse
 
-# @TODO Import your Ingestor and MemeEngine classes
+from QuoteEngine import Ingestor, QuoteModel
+from MemeEngine import MemeEngine
 
 
 def generate_meme(path=None, body=None, author=None):
@@ -11,11 +13,9 @@ def generate_meme(path=None, body=None, author=None):
 
     if path is None:
         images = "./_data/photos/dog/"
-        imgs = []
-        for root, dirs, files in os.walk(images):
-            imgs = [os.path.join(root, name) for name in files]
+        imgs = list(filter(lambda ext: ext.split('.')[-1] in ['jpg', 'png', 'gif'], next(os.walk(images), (None, None, []))[2]))
 
-        img = random.choice(imgs)
+        img = images + random.choice(imgs)
     else:
         img = path[0]
 
@@ -40,9 +40,12 @@ def generate_meme(path=None, body=None, author=None):
 
 
 if __name__ == "__main__":
-    # @TODO Use ArgumentParser to parse the following CLI arguments
-    # path - path to an image file
-    # body - quote body to add to the image
-    # author - quote author to add to the image
-    args = None
+
+    parser = argparse.ArgumentParser(description='Give a image path, quote and author to get a randomized meme')
+    parser.add_argument('--path', type=str, default=None)
+    parser.add_argument('--body', type=str, default=None)
+    parser.add_argument('--author', type=str, default=None)
+
+    args = parser.parse_args()
+
     print(generate_meme(args.path, args.body, args.author))

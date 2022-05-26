@@ -6,8 +6,11 @@ class QuoteModel():
         author: string of author name 
     """
     def __init__(self, body: str, author: str):
-        self.body = body
-        self.author = author
+        if type(body) == str and type(author) == str:
+            self.body = body
+            self.author = author
+        else:
+            raise TypeError(f"body and author of a QuoteModel must be of type 'str', ({type(body)}, {type(author)}) not accepted")
     
     def __repr__(self):
         return f"<'{self.body}' - {self.author}>"
