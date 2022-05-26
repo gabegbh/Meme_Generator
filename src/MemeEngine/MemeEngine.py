@@ -32,4 +32,3 @@ class MemeEngine():
         im.save(f'{self.out_path}/{body.strip(".")}.jpg')
 
         return f'{self.out_path}/{body.strip(".")}.jpg'
-        
