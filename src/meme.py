@@ -17,7 +17,7 @@ def generate_meme(path=None, body=None, author=None):
         paths = filter(lambda ext: ext.split('.')[-1] in ['jpg', 'png', 'gif'], paths)
         imgs = [images + img for img in paths]
 
-        img = images + random.choice(imgs)
+        img = random.choice(imgs)
     else:
         img = path[0]
 
