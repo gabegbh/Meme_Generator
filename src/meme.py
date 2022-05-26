@@ -13,7 +13,9 @@ def generate_meme(path=None, body=None, author=None):
 
     if path is None:
         images = "./_data/photos/dog/"
-        imgs = list(filter(lambda ext: ext.split('.')[-1] in ['jpg', 'png', 'gif'], next(os.walk(images), (None, None, []))[2]))
+        paths = next(os.walk(images), (None, None, []))[2]
+        paths = filter(lambda ext: ext.split('.')[-1] in ['jpg', 'png', 'gif'], paths)
+        imgs = [images + img for img in paths]
 
         img = images + random.choice(imgs)
     else:
@@ -40,8 +42,8 @@ def generate_meme(path=None, body=None, author=None):
 
 
 if __name__ == "__main__":
-
-    parser = argparse.ArgumentParser(description='Give a image path, quote and author to get a randomized meme')
+    desc = 'Give a image path, quote and author to get a randomized meme'
+    parser = argparse.ArgumentParser(description=desc)
     parser.add_argument('--path', type=str, default=None)
     parser.add_argument('--body', type=str, default=None)
     parser.add_argument('--author', type=str, default=None)

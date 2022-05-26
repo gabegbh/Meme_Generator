@@ -1,9 +1,12 @@
 from PIL import Image, ImageFont, ImageDraw
 
 class MemeEngine():
+    """
+    Engine for producitn memes with the make_meme method
+    """
     def __init__(self, out_path: str):
         self.out_path = out_path
-    
+
     def make_meme(self, img_path: str, body: str, author: str, width=500) -> str:
         """Make a meme from the image path and the quote components given
 
@@ -24,7 +27,9 @@ class MemeEngine():
         print(font.size)
         new_font_size = int(font.size / (init_length/(im.width * .8)))
         draw = ImageDraw.Draw(im)
-        draw.text((int(im.width * 0.1),10), f'"{body}" - {author}', font=ImageFont.truetype("./fonts/LilitaOne-Regular.ttf", new_font_size))
+        new_font = ImageFont.truetype("./fonts/LilitaOne-Regular.ttf", new_font_size)
+        draw.text((int(im.width * 0.1),10), f'"{body}" - {author}', font=new_font)
         im.save(f'{self.out_path}/{body.strip(".")}.jpg')
-            
+
         return f'{self.out_path}/{body.strip(".")}.jpg'
+        
